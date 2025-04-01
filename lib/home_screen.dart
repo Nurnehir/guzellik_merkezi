@@ -1,83 +1,144 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'login_screen.dart';
+import 'kuafor_screen.dart';
+import 'tirnak_screen.dart';
+import 'estetik_screen.dart';
+import 'mezoterapi_screen.dart';
+import 'lazer_screen.dart';
+import 'cilt_bakimi_screen.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  Timer? _timer;
+  Duration _timeoutDuration = Duration(minutes: 5);
+
+  void _resetTimer() {
+    _timer?.cancel();
+    _timer = Timer(_timeoutDuration, _handleTimeout);
+  }
+
+  void _handleTimeout() async {
+    await FirebaseAuth.instance.signOut();
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => LoginScreen()),
+      (route) => false,
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _resetTimer();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Ana Ekran"),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.exit_to_app),
-            onPressed: () async {
-              await FirebaseAuth.instance.signOut();
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => LoginScreen()),
-              );
-            },
-          ),
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Hoş geldiniz!",
-              style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 24),
-            Expanded(
-              child: GridView.count(
-                crossAxisCount: 2,
-                mainAxisSpacing: 16,
-                crossAxisSpacing: 16,
-                children: [
-                  _buildCategoryCard(
-                    context,
-                    icon: Icons.content_cut,
-                    label: 'Kuaför',
-                    color: Colors.pink[100]!,
-                    onTap: () {
-                      // TODO: Kuaför ekranına yönlendir
-                    },
-                  ),
-                  _buildCategoryCard(
-                    context,
-                    icon: Icons.healing,
-                    label: 'Mezoterapi',
-                    color: Colors.purple[100]!,
-                    onTap: () {
-                      // TODO: Mezoterapi ekranına yönlendir
-                    },
-                  ),
-                  _buildCategoryCard(
-                    context,
-                    icon: Icons.spa, // Tırnak ekranı için geçici ikon
-
-                    label: 'Tırnak',
-                    color: Colors.blue[100]!,
-                    onTap: () {
-                      // TODO: Tırnak ekranına yönlendir
-                    },
-                  ),
-                  _buildCategoryCard(
-                    context,
-                    icon: Icons.face_retouching_natural,
-                    label: 'Estetik',
-                    color: Colors.green[100]!,
-                    onTap: () {
-                      // TODO: Estetik ekranına yönlendir
-                    },
-                  ),
-                ],
-              ),
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: _resetTimer,
+      onPanDown: (_) => _resetTimer(),
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("Ana Ekran"),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.exit_to_app),
+              onPressed: () async {
+                await FirebaseAuth.instance.signOut();
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginScreen()),
+                );
+              },
             ),
           ],
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Hoş geldiniz!",
+                style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 24),
+              Expanded(
+                child: GridView.count(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 16,
+                  crossAxisSpacing: 16,
+                  children:
+                      categories.map((category) {
+                        return _buildCategoryCard(
+                          context,
+                          icon: category.icon,
+                          label: category.name,
+                          color: category.color,
+                          onTap: () {
+                            if (category.name == "Kuaför") {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => KuaforScreen(),
+                                ),
+                              );
+                            } else if (category.name == "Tırnak") {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => TirnakScreen(),
+                                ),
+                              );
+                            } else if (category.name == "Estetik") {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => EstetikScreen(),
+                                ),
+                              );
+                            } else if (category.name == "Mezoterapi") {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => MezoterapiScreen(),
+                                ),
+                              );
+                            } else if (category.name == "Lazer") {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => LazerScreen(),
+                                ),
+                              );
+                            } else if (category.name == "Cilt Bakımı") {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => CiltBakimiScreen(),
+                                ),
+                              );
+                            }
+                          },
+                        );
+                      }).toList(),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -118,4 +179,21 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
+
+  final List<CategoryItem> categories = [
+    CategoryItem("Kuaför", Icons.cut, Colors.pink[100]!),
+    CategoryItem("Tırnak", Icons.brush, Colors.teal[100]!),
+    CategoryItem("Estetik", Icons.face, Colors.amber[100]!),
+    CategoryItem("Mezoterapi", Icons.vaccines, Colors.deepPurple[100]!),
+    CategoryItem("Lazer", Icons.flash_on, Colors.blueGrey[100]!),
+    CategoryItem("Cilt Bakımı", Icons.spa, Colors.green[100]!),
+  ];
+}
+
+class CategoryItem {
+  final String name;
+  final IconData icon;
+  final Color color;
+
+  CategoryItem(this.name, this.icon, this.color);
 }

@@ -1,0 +1,58 @@
+import 'package:flutter/material.dart';
+
+class MezoterapiScreen extends StatelessWidget {
+  final List<String> kategoriler = [
+    "Saç Mezoterapisi",
+    "Yüz Mezoterapisi (Mezolifting)",
+    "PRP Mezoterapisi",
+    "İğnesiz Mezoterapi",
+    "Selülit Mezoterapisi",
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Mezoterapi Hizmetleri")),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color(0xFFFDEBEB),
+              Color(0xFFE7DFFF),
+              Color(0xFFDFFFE7),
+              Color(0xFFFFE6F7),
+            ],
+          ),
+        ),
+        child: ListView.builder(
+          padding: EdgeInsets.all(16),
+          itemCount: kategoriler.length,
+          itemBuilder: (context, index) {
+            return Container(
+              margin: EdgeInsets.only(bottom: 12),
+              padding: EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.15),
+                    blurRadius: 4,
+                    offset: Offset(0, 2),
+                  ),
+                ],
+              ),
+              alignment: Alignment.centerLeft,
+              child: Text(
+                kategoriler[index],
+                style: TextStyle(fontSize: 16, color: Colors.black87),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
