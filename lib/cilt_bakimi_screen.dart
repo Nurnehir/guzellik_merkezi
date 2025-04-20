@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:guzellik_merkezi/map_screen.dart'; // <-- MapScreen import'u
 
 class CiltBakimiScreen extends StatelessWidget {
   final List<String> kategoriler = [
@@ -47,9 +48,29 @@ class CiltBakimiScreen extends StatelessWidget {
                 ],
               ),
               alignment: Alignment.centerLeft,
-              child: Text(
-                kategoriler[index],
-                style: TextStyle(fontSize: 16, color: Colors.black87),
+              child: Column(
+                // <-- Column ekledik
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    kategoriler[index],
+                    style: TextStyle(fontSize: 16, color: Colors.black87),
+                  ),
+                  SizedBox(height: 8), // Butonla arada boşluk bırakmak için
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (context) =>
+                                  MapScreen(category: "Güzellik Merkezi"),
+                        ),
+                      );
+                    },
+                    child: Text("Haritada Cilt Bakımı Hizmetlerini Göster"),
+                  ),
+                ],
               ),
             );
           },

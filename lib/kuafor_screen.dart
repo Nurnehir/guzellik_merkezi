@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:guzellik_merkezi/map_screen.dart'; // <-- MapScreen import'u
 
 class KuaforScreen extends StatelessWidget {
   final List<String> kategoriler = [
@@ -50,9 +51,26 @@ class KuaforScreen extends StatelessWidget {
                 ],
               ),
               alignment: Alignment.centerLeft,
-              child: Text(
-                kategoriler[index],
-                style: TextStyle(fontSize: 16, color: Colors.black87),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    kategoriler[index],
+                    style: TextStyle(fontSize: 16, color: Colors.black87),
+                  ),
+                  SizedBox(height: 8), // Butonla arada boşluk bırakmak için
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MapScreen(category: "Kuaför"),
+                        ),
+                      );
+                    },
+                    child: Text("Haritada Kuaförleri Göster"),
+                  ),
+                ],
               ),
             );
           },

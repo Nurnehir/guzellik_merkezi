@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'login_screen.dart';
 import 'kuafor_screen.dart';
@@ -139,6 +140,19 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ],
           ),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            FirebaseFirestore.instance.collection('salons').add({
+              'name': 'Test Kuaför',
+              'category': 'Kuaför',
+              'latitude': 41.015137,
+              'longitude': 28.979530,
+              'address': 'İstanbul, Taksim',
+              'rating': 4.9,
+            });
+          },
+          child: const Icon(Icons.add),
         ),
       ),
     );

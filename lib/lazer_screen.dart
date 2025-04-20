@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:guzellik_merkezi/map_screen.dart'; // <-- MapScreen import'u
 
 class LazerScreen extends StatelessWidget {
   final Map<String, List<String>> kategoriler = {
@@ -41,28 +42,50 @@ class LazerScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 8),
                     ...entry.value.map((altKategori) {
-                      return Container(
-                        margin: EdgeInsets.only(bottom: 12),
-                        padding: EdgeInsets.symmetric(
-                          vertical: 14,
-                          horizontal: 20,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.15),
-                              blurRadius: 4,
-                              offset: Offset(0, 2),
+                      return Column(
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(bottom: 12),
+                            padding: EdgeInsets.symmetric(
+                              vertical: 14,
+                              horizontal: 20,
                             ),
-                          ],
-                        ),
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          altKategori,
-                          style: TextStyle(fontSize: 16, color: Colors.black87),
-                        ),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.15),
+                                  blurRadius: 4,
+                                  offset: Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              altKategori,
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.black87,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => MapScreen(
+                                        category: "Güzellik Merkezi",
+                                      ),
+                                ),
+                              );
+                            },
+                            child: Text("Haritada Lazer Hizmetlerini Göster"),
+                          ),
+                        ],
                       );
                     }).toList(),
                     SizedBox(height: 24),
