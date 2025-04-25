@@ -119,7 +119,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               );
                             },
                             child: const Text(
-                              "Şifremi unuttum",
+                              "Şifremi unuttum.",
                               style: TextStyle(color: Colors.pinkAccent),
                             ),
                           ),
@@ -154,7 +154,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       );
                     },
                     child: const Text(
-                      "Hesabınız yok mu? Kıyat Ol",
+                      "Hesabınız yok mu? Kayıt Ol",
                       style: TextStyle(color: Colors.pinkAccent),
                     ),
                   ),

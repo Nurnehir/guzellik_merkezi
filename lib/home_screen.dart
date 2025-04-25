@@ -86,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       categories.map((category) {
                         return _buildCategoryCard(
                           context,
-                          icon: category.icon,
+                          iconPath: category.iconPath,
                           label: category.name,
                           color: category.color,
                           onTap: () {
@@ -160,7 +160,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildCategoryCard(
     BuildContext context, {
-    required IconData icon,
+    required String iconPath,
     required String label,
     required Color color,
     required VoidCallback onTap,
@@ -182,7 +182,11 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 48, color: Colors.black54),
+            Image.asset(
+              iconPath,
+              width: 50, // İconların boyutunu ayarlayabilirsiniz
+              height: 50,
+            ),
             SizedBox(height: 12),
             Text(
               label,
@@ -195,19 +199,23 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   final List<CategoryItem> categories = [
-    CategoryItem("Kuaför", Icons.cut, Colors.pink[100]!),
-    CategoryItem("Tırnak", Icons.brush, Colors.teal[100]!),
-    CategoryItem("Estetik", Icons.face, Colors.amber[100]!),
-    CategoryItem("Mezoterapi", Icons.vaccines, Colors.deepPurple[100]!),
-    CategoryItem("Lazer", Icons.flash_on, Colors.blueGrey[100]!),
-    CategoryItem("Cilt Bakımı", Icons.spa, Colors.green[100]!),
+    CategoryItem("Kuaför", 'assets/kuafor.png', Colors.pink[100]!),
+    CategoryItem("Tırnak", 'assets/tirnak.png', Colors.teal[100]!),
+    CategoryItem("Estetik", 'assets/estetik.png', Colors.amber[100]!),
+    CategoryItem(
+      "Mezoterapi",
+      'assets/mezoterapi.png',
+      Colors.deepPurple[100]!,
+    ),
+    CategoryItem("Lazer", 'assets/lazer.png', Colors.blueGrey[100]!),
+    CategoryItem("Cilt Bakımı", 'assets/cilt_bakimi.png', Colors.green[100]!),
   ];
 }
 
 class CategoryItem {
   final String name;
-  final IconData icon;
+  final String iconPath;
   final Color color;
 
-  CategoryItem(this.name, this.icon, this.color);
+  CategoryItem(this.name, this.iconPath, this.color);
 }

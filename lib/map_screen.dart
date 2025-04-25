@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart'; // Google Maps paketi
-import 'package:geolocator/geolocator.dart'; // Geolocator paketi
-import 'package:cloud_firestore/cloud_firestore.dart'; // Firestore paketi
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'selectcity_screen.dart';
 
 class MapScreen extends StatefulWidget {
-  final String category; // 👈 Yeni eklenen satır
+  final String category;
+  final LatLng cityCoordinates;
 
-  MapScreen({required this.category}); // 👈 Constructor'a ekledik
+  MapScreen({required this.category, required this.cityCoordinates});
 
   @override
   _MapScreenState createState() => _MapScreenState();
@@ -14,55 +16,62 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> {
   late GoogleMapController mapController;
+  Set<Marker> _markers = {};
   LatLng? _center;
-
-  Set<Marker> _markers = {}; // Marker'ları tutacak set
 
   @override
   void initState() {
     super.initState();
-    _getUserLocation(); // Kullanıcı konumunu almak için çağırıyoruz
+    _initializeCenter(); // ilk koordinat kararını burada ver
+    _loadSalons();
   }
 
-  // Kullanıcı konumunu al
+  // İlk koordinat kontrolü
+  _initializeCenter() async {
+    if (widget.cityCoordinates.latitude == 0 &&
+        widget.cityCoordinates.longitude == 0) {
+      await _getUserLocation(); // anlık konum al
+    } else {
+      setState(() {
+        _center = widget.cityCoordinates;
+      });
+    }
+  }
+
+  // Kullanıcı konumunu alma
   _getUserLocation() async {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Future.error('Konum servisi kapalı!');
-    }
+    if (!serviceEnabled) return;
 
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
     }
 
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error('Konum izni kalıcı olarak reddedildi!');
-    }
+    if (permission == LocationPermission.deniedForever) return;
 
     Position position = await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.high,
     );
-    _center = LatLng(position.latitude, position.longitude);
 
-    // Salonları Firestore'dan çekiyoruz
-    _loadSalons();
-
-    setState(() {}); // Kullanıcı konumu alındıktan sonra UI'yı güncelliyoruz
+    setState(() {
+      _center = LatLng(position.latitude, position.longitude);
+    });
   }
 
+  // Firestore'dan salonları yükle
   _loadSalons() async {
     var salonQuery =
         await FirebaseFirestore.instance.collection('salons').get();
 
+    Set<Marker> newMarkers = {};
+
     for (var salon in salonQuery.docs) {
       if (salon['category'] == widget.category) {
-        double salonLat =
-            salon['latitude']; // Burada GeoPoint yerine latitude alıyoruz
-        double salonLng =
-            salon['longitude']; // Burada GeoPoint yerine longitude alıyoruz
+        double salonLat = salon['latitude'];
+        double salonLng = salon['longitude'];
 
-        _markers.add(
+        newMarkers.add(
           Marker(
             markerId: MarkerId(salon.id),
             position: LatLng(salonLat, salonLng),
@@ -75,27 +84,59 @@ class _MapScreenState extends State<MapScreen> {
       }
     }
 
-    setState(() {}); // Marker'ları ekledikten sonra UI'yı güncelliyoruz
+    setState(() {
+      _markers = newMarkers;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Güzellik Merkezleri")),
+      appBar: AppBar(title: Text(widget.category)),
       body:
           _center == null
               ? Center(child: CircularProgressIndicator())
-              : GoogleMap(
-                onMapCreated: (GoogleMapController controller) {
-                  mapController = controller;
-                },
-                initialCameraPosition: CameraPosition(
-                  target: _center!,
-                  zoom: 15,
-                ),
-                myLocationEnabled: true,
-                myLocationButtonEnabled: true,
-                markers: _markers,
+              : Column(
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: GoogleMap(
+                      onMapCreated: (GoogleMapController controller) {
+                        mapController = controller;
+                      },
+                      initialCameraPosition: CameraPosition(
+                        target: _center!,
+                        zoom: 15,
+                      ),
+                      myLocationEnabled: true,
+                      myLocationButtonEnabled: true,
+                      markers: _markers,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        final selectedCityLatLng = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SelectCityScreen(),
+                          ),
+                        );
+
+                        if (selectedCityLatLng != null) {
+                          mapController.animateCamera(
+                            CameraUpdate.newLatLng(selectedCityLatLng),
+                          );
+                          setState(() {
+                            _center = selectedCityLatLng;
+                          });
+                        }
+                      },
+                      child: Text("Konum Seç"),
+                    ),
+                  ),
+                ],
               ),
     );
   }
