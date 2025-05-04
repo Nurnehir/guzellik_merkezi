@@ -3,6 +3,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'selectcity_screen.dart';
+import 'randevu_al_page.dart';
 
 class MapScreen extends StatefulWidget {
   final String category;
@@ -18,19 +19,19 @@ class _MapScreenState extends State<MapScreen> {
   late GoogleMapController mapController;
   Set<Marker> _markers = {};
   LatLng? _center;
+  Map<String, dynamic>? selectedSalon;
 
   @override
   void initState() {
     super.initState();
-    _initializeCenter(); // ilk koordinat kararını burada ver
+    _initializeCenter();
     _loadSalons();
   }
 
-  // İlk koordinat kontrolü
   _initializeCenter() async {
     if (widget.cityCoordinates.latitude == 0 &&
         widget.cityCoordinates.longitude == 0) {
-      await _getUserLocation(); // anlık konum al
+      await _getUserLocation();
     } else {
       setState(() {
         _center = widget.cityCoordinates;
@@ -38,7 +39,6 @@ class _MapScreenState extends State<MapScreen> {
     }
   }
 
-  // Kullanıcı konumunu alma
   _getUserLocation() async {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) return;
@@ -59,7 +59,6 @@ class _MapScreenState extends State<MapScreen> {
     });
   }
 
-  // Firestore'dan salonları yükle
   _loadSalons() async {
     var salonQuery =
         await FirebaseFirestore.instance.collection('salons').get();
@@ -79,6 +78,17 @@ class _MapScreenState extends State<MapScreen> {
               title: salon['name'],
               snippet: salon['address'],
             ),
+            onTap: () {
+              setState(() {
+                selectedSalon = {
+                  'id': salon.id,
+                  'name': salon['name'],
+                  'address': salon['address'],
+                  'category': salon['category'],
+                  'service': widget.category,
+                };
+              });
+            },
           ),
         );
       }
@@ -114,26 +124,64 @@ class _MapScreenState extends State<MapScreen> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        final selectedCityLatLng = await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => SelectCityScreen(),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed:
+                                selectedSalon != null
+                                    ? () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder:
+                                              (context) => RandevuAlPage(
+                                                salonData: selectedSalon!,
+                                                serviceName:
+                                                    widget
+                                                        .category, // veya hangi işlem türüyse
+                                              ),
+                                        ),
+                                      );
+                                    }
+                                    : null,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  selectedSalon != null
+                                      ? Colors.blue
+                                      : Colors.grey,
+                            ),
+                            child: Text("Randevu Al"),
                           ),
-                        );
+                        ),
+                        SizedBox(width: 16),
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              final selectedCityLatLng = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SelectCityScreen(),
+                                ),
+                              );
 
-                        if (selectedCityLatLng != null) {
-                          mapController.animateCamera(
-                            CameraUpdate.newLatLng(selectedCityLatLng),
-                          );
-                          setState(() {
-                            _center = selectedCityLatLng;
-                          });
-                        }
-                      },
-                      child: Text("Konum Seç"),
+                              if (selectedCityLatLng != null) {
+                                mapController.animateCamera(
+                                  CameraUpdate.newLatLng(selectedCityLatLng),
+                                );
+                                setState(() {
+                                  _center = selectedCityLatLng;
+                                });
+                              }
+                            },
+                            child: Text("Konum Seç"),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],

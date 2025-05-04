@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'login_screen.dart';
 import 'kuafor_screen.dart';
@@ -9,6 +8,7 @@ import 'estetik_screen.dart';
 import 'mezoterapi_screen.dart';
 import 'lazer_screen.dart';
 import 'cilt_bakimi_screen.dart';
+import 'profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -143,16 +143,14 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            FirebaseFirestore.instance.collection('salons').add({
-              'name': 'Test Kuaför',
-              'category': 'Kuaför',
-              'latitude': 41.015137,
-              'longitude': 28.979530,
-              'address': 'İstanbul, Taksim',
-              'rating': 4.9,
-            });
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ProfileScreen()),
+            );
           },
-          child: const Icon(Icons.add),
+          backgroundColor: Colors.purple.shade100,
+          child: Icon(Icons.person, color: Colors.black87),
+          tooltip: "Profilim",
         ),
       ),
     );

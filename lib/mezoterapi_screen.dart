@@ -63,15 +63,23 @@ class MezoterapiScreen extends StatelessWidget {
                           builder:
                               (context) => MapScreen(
                                 category: "Güzellik Merkezi",
-                                cityCoordinates: LatLng(
-                                  0,
-                                  0,
-                                ), // Anlık konum alınacak
+                                cityCoordinates: LatLng(0, 0),
                               ),
                         ),
                       );
                     },
-                    child: Text("Haritada Mezoterapi Hizmetlerini Göster"),
+                    style: ElevatedButton.styleFrom(
+                      shape: CircleBorder(),
+                      padding: EdgeInsets.all(14),
+                      backgroundColor:
+                          Colors.lightBlue[100], // Açık mavi arka plan
+                      elevation: 4,
+                    ),
+                    child: Icon(
+                      Icons.navigation_outlined, // Eğik boş konum simgesi
+                      color: Colors.purple, // Mor renk
+                      size: 30,
+                    ),
                   ),
                 ],
               ),
