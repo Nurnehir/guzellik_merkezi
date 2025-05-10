@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'randevu_al_page.dart';
 import 'package:intl/intl.dart';
+import 'comment_screen.dart';
 
 class MyAppointmentsScreen extends StatelessWidget {
   final User? user = FirebaseAuth.instance.currentUser;
@@ -69,6 +70,23 @@ class MyAppointmentsScreen extends StatelessWidget {
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
+                      IconButton(
+                        icon: Icon(Icons.star, color: Colors.orange),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (_) => CommentScreen(
+                                    salonId: data['salonId'],
+                                    salonName: data['salonName'],
+                                    userName: data['userName'] ?? '',
+                                    userSurname: data['userSurname'] ?? '',
+                                  ),
+                            ),
+                          );
+                        },
+                      ),
                       IconButton(
                         icon: Icon(Icons.edit, color: Colors.blue),
                         onPressed: () {

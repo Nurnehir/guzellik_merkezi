@@ -9,6 +9,7 @@ import 'mezoterapi_screen.dart';
 import 'lazer_screen.dart';
 import 'cilt_bakimi_screen.dart';
 import 'profile_screen.dart';
+import 'listeleme_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -141,16 +142,42 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ProfileScreen()),
-            );
-          },
-          backgroundColor: Colors.purple.shade100,
-          child: Icon(Icons.person, color: Colors.black87),
-          tooltip: "Profilim",
+        floatingActionButton: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            FloatingActionButton(
+              heroTag: "bilgi",
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ListelemeScreen()),
+                );
+              },
+              backgroundColor: Colors.blue.shade100,
+              child: ClipOval(
+                child: Image.asset(
+                  'assets/bilgi2.png',
+                  width: 30,
+                  height: 30,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              tooltip: "Yorumlarım",
+            ),
+            SizedBox(width: 16),
+            FloatingActionButton(
+              heroTag: "profil",
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ProfileScreen()),
+                );
+              },
+              backgroundColor: Colors.purple.shade100,
+              child: Icon(Icons.person, color: Colors.black87),
+              tooltip: "Profilim",
+            ),
+          ],
         ),
       ),
     );

@@ -142,8 +142,7 @@ class _MapScreenState extends State<MapScreen> {
                                               (context) => RandevuAlPage(
                                                 salonData: selectedSalon!,
                                                 serviceName:
-                                                    widget
-                                                        .category, // veya hangi işlem türüyse
+                                                    selectedSalon!['service'], // ✅ burada artık doğru hizmeti gönderiyorsun
                                               ),
                                         ),
                                       );
