@@ -53,138 +53,179 @@ class _HomeScreenState extends State<HomeScreen> {
       onTap: _resetTimer,
       onPanDown: (_) => _resetTimer(),
       child: Scaffold(
-        appBar: AppBar(
-          title: Text("Ana Ekran"),
-          actions: [
-            IconButton(
-              icon: Icon(Icons.exit_to_app),
-              onPressed: () async {
-                await FirebaseAuth.instance.signOut();
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginScreen()),
-                );
-              },
-            ),
-          ],
-        ),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+        body: SafeArea(
+          child: Stack(
             children: [
-              Text(
-                "Hoş geldiniz!",
-                style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+              Container(
+                color: Colors.white,
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "Ana Ekran",
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    const Text(
+                      "Hoş geldiniz!",
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.deepPurple,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    Expanded(
+                      child: GridView.count(
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 16,
+                        crossAxisSpacing: 16,
+                        children:
+                            categories.map((category) {
+                              return _buildCategoryCard(
+                                iconPath: category.iconPath,
+                                label: category.name,
+                                color: category.color,
+                                onTap: () {
+                                  switch (category.name) {
+                                    case "Kuaför":
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => KuaforScreen(),
+                                        ),
+                                      );
+                                      break;
+                                    case "Tırnak":
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => TirnakScreen(),
+                                        ),
+                                      );
+                                      break;
+                                    case "Estetik":
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => EstetikScreen(),
+                                        ),
+                                      );
+                                      break;
+                                    case "Mezoterapi":
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => MezoterapiScreen(),
+                                        ),
+                                      );
+                                      break;
+                                    case "Lazer":
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => LazerScreen(),
+                                        ),
+                                      );
+                                      break;
+                                    case "Cilt Bakımı":
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => CiltBakimiScreen(),
+                                        ),
+                                      );
+                                      break;
+                                  }
+                                },
+                              );
+                            }).toList(),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              SizedBox(height: 24),
-              Expanded(
-                child: GridView.count(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 16,
-                  crossAxisSpacing: 16,
-                  children:
-                      categories.map((category) {
-                        return _buildCategoryCard(
-                          context,
-                          iconPath: category.iconPath,
-                          label: category.name,
-                          color: category.color,
-                          onTap: () {
-                            if (category.name == "Kuaför") {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => KuaforScreen(),
-                                ),
-                              );
-                            } else if (category.name == "Tırnak") {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => TirnakScreen(),
-                                ),
-                              );
-                            } else if (category.name == "Estetik") {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => EstetikScreen(),
-                                ),
-                              );
-                            } else if (category.name == "Mezoterapi") {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => MezoterapiScreen(),
-                                ),
-                              );
-                            } else if (category.name == "Lazer") {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => LazerScreen(),
-                                ),
-                              );
-                            } else if (category.name == "Cilt Bakımı") {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => CiltBakimiScreen(),
-                                ),
-                              );
-                            }
-                          },
-                        );
-                      }).toList(),
+
+              // Sağ üst köşedeki logout iconu
+              Positioned(
+                top: 12,
+                right: 12,
+                child: GestureDetector(
+                  onTap: () async {
+                    await FirebaseAuth.instance.signOut();
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (_) => LoginScreen()),
+                    );
+                  },
+                  child: Image.asset(
+                    'assets/logout.png',
+                    width: 32,
+                    height: 32,
+                  ),
+                ),
+              ),
+
+              // Sol alttaki bilgi2.png (Yorumlarım) - ŞEFFAF & YUVARLAK
+              Positioned(
+                bottom: 20,
+                left: 20,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => ListelemeScreen()),
+                    );
+                  },
+                  child: ClipOval(
+                    child: Image.asset(
+                      'assets/bilgi2.png',
+                      width: 55,
+                      height: 55,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              ),
+
+              // Sağ alttaki profil butonu
+              Positioned(
+                bottom: 20,
+                right: 20,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => ProfileScreen()),
+                    );
+                  },
+                  child: Container(
+                    width: 55,
+                    height: 55,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.purple.shade100,
+                      boxShadow: [
+                        BoxShadow(color: Colors.black26, blurRadius: 6),
+                      ],
+                    ),
+                    child: const Icon(Icons.person, color: Colors.black87),
+                  ),
                 ),
               ),
             ],
           ),
         ),
-        floatingActionButton: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            FloatingActionButton(
-              heroTag: "bilgi",
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ListelemeScreen()),
-                );
-              },
-              backgroundColor: Colors.blue.shade100,
-              child: ClipOval(
-                child: Image.asset(
-                  'assets/bilgi2.png',
-                  width: 30,
-                  height: 30,
-                  fit: BoxFit.cover,
-                ),
-              ),
-              tooltip: "Yorumlarım",
-            ),
-            SizedBox(width: 16),
-            FloatingActionButton(
-              heroTag: "profil",
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ProfileScreen()),
-                );
-              },
-              backgroundColor: Colors.purple.shade100,
-              child: Icon(Icons.person, color: Colors.black87),
-              tooltip: "Profilim",
-            ),
-          ],
-        ),
       ),
     );
   }
 
-  Widget _buildCategoryCard(
-    BuildContext context, {
+  Widget _buildCategoryCard({
     required String iconPath,
     required String label,
     required Color color,
@@ -199,7 +240,7 @@ class _HomeScreenState extends State<HomeScreen> {
           boxShadow: [
             BoxShadow(
               color: Colors.grey.withOpacity(0.4),
-              blurRadius: 6,
+              blurRadius: 8,
               offset: Offset(2, 4),
             ),
           ],
@@ -207,15 +248,15 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(
-              iconPath,
-              width: 50, // İconların boyutunu ayarlayabilirsiniz
-              height: 50,
-            ),
-            SizedBox(height: 12),
+            Image.asset(iconPath, width: 50, height: 50),
+            const SizedBox(height: 12),
             Text(
               label,
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: Colors.black87,
+              ),
             ),
           ],
         ),

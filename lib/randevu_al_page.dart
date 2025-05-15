@@ -120,6 +120,7 @@ class _RandevuAlPageState extends State<RandevuAlPage> {
         'userEmail': FirebaseAuth.instance.currentUser?.email ?? '',
         'appointmentDate': datetime,
         'updatedAt': FieldValue.serverTimestamp(),
+        'status': 'pending',
       };
 
       if (widget.existingAppointmentId != null) {

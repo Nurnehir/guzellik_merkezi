@@ -28,89 +28,102 @@ class _SelectCityScreenState extends State<SelectCityScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Şehir Seçin")),
       body: Container(
-        decoration: BoxDecoration(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFFFFF1F1), Color(0xFFEDEBFF), Color(0xFFE6FFF5)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+            colors: [
+              Color(0xFFFADADD), // Açık pembe alt
+              Color(0xFFEAF6FF), // Beyazımsı geçiş
+              Color(0xFFB3E5FC), // Açık mavi üst
+            ],
+            begin: Alignment.bottomLeft,
+            end: Alignment.topRight,
           ),
         ),
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  "Bir şehir seçin:",
-                  style: TextStyle(
-                    fontSize: 26,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black87,
+        child: SafeArea(
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    "Şehir Seçin",
+                    style: TextStyle(
+                      fontSize: 26,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.deepPurple,
+                    ),
                   ),
-                ),
-                SizedBox(height: 24),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.25),
-                        blurRadius: 8,
-                        offset: Offset(0, 4),
+                  const SizedBox(height: 28),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.95),
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 10,
+                          offset: Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        isExpanded: true,
+                        value: selectedCity,
+                        hint: const Text("Bir şehir seçin"),
+                        onChanged: (newValue) {
+                          setState(() {
+                            selectedCity = newValue;
+                          });
+                        },
+                        items:
+                            cities.map((String city) {
+                              return DropdownMenuItem<String>(
+                                value: city,
+                                child: Text(city),
+                              );
+                            }).toList(),
                       ),
-                    ],
-                  ),
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton<String>(
-                      isExpanded: true,
-                      value: selectedCity,
-                      hint: Text("Şehir Seçin"),
-                      onChanged: (newValue) {
-                        setState(() {
-                          selectedCity = newValue;
-                        });
-                      },
-                      items:
-                          cities.map((String city) {
-                            return DropdownMenuItem<String>(
-                              value: city,
-                              child: Text(city),
-                            );
-                          }).toList(),
                     ),
                   ),
-                ),
-                SizedBox(height: 32),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.pinkAccent.shade100,
-                    foregroundColor: Colors.white,
-                    padding: EdgeInsets.symmetric(horizontal: 40, vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                  const SizedBox(height: 36),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed:
+                          selectedCity != null
+                              ? () {
+                                Navigator.pop(
+                                  context,
+                                  cityCoordinates[selectedCity!],
+                                );
+                              }
+                              : null,
+                      icon: const Icon(Icons.map, color: Colors.white),
+                      label: const Text(
+                        "Haritada Göster",
+                        style: TextStyle(fontSize: 16, color: Colors.white),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.pinkAccent,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        elevation: 6,
+                      ),
                     ),
-                    elevation: 4,
                   ),
-                  onPressed:
-                      selectedCity != null
-                          ? () {
-                            Navigator.pop(
-                              context,
-                              cityCoordinates[selectedCity!],
-                            );
-                          }
-                          : null,
-                  child: Text(
-                    "Haritada Göster",
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
