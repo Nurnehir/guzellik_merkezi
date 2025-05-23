@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:993447977304:android:656f725c7eb6b8bd16452d",
+        "mobilesdk_app_id": "1:993447977304:android:deb5e13965f96aad16452d",
         "android_client_info": {
-          "package_name": "com.example.beauty_salon"
+          "package_name": "com.example.guzellik_merkezi"
         }
       },
       "oauth_client": [],

@@ -7,9 +7,16 @@ import 'randevu_al_page.dart';
 
 class MapScreen extends StatefulWidget {
   final String category;
-  final LatLng cityCoordinates;
-
-  MapScreen({required this.category, required this.cityCoordinates});
+  final LatLng? cityCoordinates;
+  final String? salonId;
+  final Map<String, dynamic>? selectedSalon;
+  const MapScreen({
+    super.key,
+    required this.category,
+    this.cityCoordinates,
+    this.salonId,
+    this.selectedSalon,
+  });
 
   @override
   _MapScreenState createState() => _MapScreenState();
@@ -29,8 +36,9 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   _initializeCenter() async {
-    if (widget.cityCoordinates.latitude == 0 &&
-        widget.cityCoordinates.longitude == 0) {
+    if (widget.cityCoordinates == null ||
+        widget.cityCoordinates!.latitude == 0 ||
+        widget.cityCoordinates!.longitude == 0) {
       await _getUserLocation();
     } else {
       setState(() {
@@ -67,30 +75,73 @@ class _MapScreenState extends State<MapScreen> {
 
     for (var salon in salonQuery.docs) {
       if (salon['category'] == widget.category) {
+        if (widget.selectedSalon != null &&
+            salon['name'].toString().toLowerCase() ==
+                widget.selectedSalon!['name'].toString().toLowerCase()) {
+          await Future.delayed(const Duration(milliseconds: 500));
+          mapController.animateCamera(
+            CameraUpdate.newLatLngZoom(
+              LatLng(salon['latitude'], salon['longitude']),
+              17,
+            ),
+          );
+
+          setState(() {
+            selectedSalon = {
+              'id': salon.id,
+              'name': salon['name'],
+              'address': salon['address'],
+              'category': salon['category'],
+              'service': widget.category,
+            };
+          });
+        }
+
         double salonLat = salon['latitude'];
         double salonLng = salon['longitude'];
 
-        newMarkers.add(
-          Marker(
-            markerId: MarkerId(salon.id),
-            position: LatLng(salonLat, salonLng),
-            infoWindow: InfoWindow(
-              title: salon['name'],
-              snippet: salon['address'],
-            ),
-            onTap: () {
-              setState(() {
-                selectedSalon = {
-                  'id': salon.id,
-                  'name': salon['name'],
-                  'address': salon['address'],
-                  'category': salon['category'],
-                  'service': widget.category,
-                };
-              });
-            },
+        final marker = Marker(
+          markerId: MarkerId(salon.id),
+          position: LatLng(salonLat, salonLng),
+          infoWindow: InfoWindow(
+            title: salon['name'],
+            snippet: salon['address'],
           ),
+          onTap: () {
+            setState(() {
+              selectedSalon = {
+                'id': salon.id,
+                'name': salon['name'],
+                'address': salon['address'],
+                'category': salon['category'],
+                'service': widget.category,
+              };
+            });
+          },
         );
+
+        newMarkers.add(marker);
+
+        // 🔍 Eğer bu marker 'Git' ile gelinen salonId’ye aitse, kamerayı oraya götür
+        if (widget.salonId != null && salon.id == widget.salonId) {
+          await Future.delayed(
+            const Duration(milliseconds: 400),
+          ); // Harita oluşturulmuş olsun
+          mapController.animateCamera(
+            CameraUpdate.newLatLngZoom(LatLng(salonLat, salonLng), 17),
+          );
+
+          // Bu salonu seçili olarak ayarla
+          setState(() {
+            selectedSalon = {
+              'id': salon.id,
+              'name': salon['name'],
+              'address': salon['address'],
+              'category': salon['category'],
+              'service': widget.category,
+            };
+          });
+        }
       }
     }
 

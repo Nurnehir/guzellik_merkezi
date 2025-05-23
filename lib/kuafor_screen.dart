@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:guzellik_merkezi/map_screen.dart'; // <-- MapScreen import'u
-import 'package:google_maps_flutter/google_maps_flutter.dart'; // LatLng importu ekliyoruz
+import 'package:guzellik_merkezi/oneri_screen.dart';
 
 class KuaforScreen extends StatelessWidget {
   final List<String> kategoriler = [
@@ -65,14 +64,11 @@ class KuaforScreen extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder:
-                              (context) => MapScreen(
-                                category: "Kuaför",
-                                cityCoordinates: LatLng(0, 0),
-                              ),
+                          builder: (context) => OneriScreen(category: "Kuaför"),
                         ),
                       );
                     },
+
                     style: ElevatedButton.styleFrom(
                       shape: CircleBorder(),
                       padding: EdgeInsets.all(14),

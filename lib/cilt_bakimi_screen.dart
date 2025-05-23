@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:guzellik_merkezi/map_screen.dart'; // <-- MapScreen import'u
-import 'package:google_maps_flutter/google_maps_flutter.dart'; // LatLng importu ekliyoruz
+import 'package:guzellik_merkezi/oneri_screen.dart'; // LatLng importu ekliyoruz
 
 class CiltBakimiScreen extends StatelessWidget {
   final List<String> kategoriler = [
@@ -63,10 +62,8 @@ class CiltBakimiScreen extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder:
-                              (context) => MapScreen(
-                                category: "Güzellik Merkezi",
-                                cityCoordinates: LatLng(0, 0),
-                              ),
+                              (context) =>
+                                  OneriScreen(category: "Güzellik Merkezi"),
                         ),
                       );
                     },
