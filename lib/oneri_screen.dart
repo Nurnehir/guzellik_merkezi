@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:guzellik_merkezi/map_screen.dart';
+import 'package:guzellik_merkezi/chatbot_screen.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -153,6 +154,25 @@ class _OneriScreenState extends State<OneriScreen> {
       ),
       child: Scaffold(
         backgroundColor: Colors.transparent,
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ChatbotScreen()),
+            );
+          },
+          backgroundColor: Colors.transparent, // Arka planı saydam
+          elevation: 0, // Gölgeyi kaldır
+          child: ClipOval(
+            child: Image.asset(
+              'assets/chatbot.png',
+              width: 56,
+              height: 56,
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+
         body: Center(
           child: Container(
             margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 50),
@@ -283,6 +303,7 @@ class _OneriScreenState extends State<OneriScreen> {
                     style: TextStyle(fontSize: 16, color: Colors.white),
                   ),
                 ),
+                const SizedBox(height: 10), // Haritaya Git ile arasında boşluk
               ],
             ),
           ),

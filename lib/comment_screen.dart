@@ -7,12 +7,16 @@ class CommentScreen extends StatefulWidget {
   final String salonName;
   final String userName;
   final String userSurname;
+  final String salonKategori;
+  final String sehir;
 
   CommentScreen({
     required this.salonId,
     required this.salonName,
     required this.userName,
     required this.userSurname,
+    required this.salonKategori,
+    required this.sehir,
   });
 
   @override
@@ -62,6 +66,8 @@ class _CommentScreenState extends State<CommentScreen> {
     await FirebaseFirestore.instance.collection("comments").add({
       'salonId': widget.salonId,
       'salonAdi': widget.salonName,
+      'sehir': widget.sehir,
+      'salonKategori': widget.salonKategori,
       'userName': widget.userName,
       'userSurname': widget.userSurname,
       'kullaniciAdi': currentUser?.email ?? '',

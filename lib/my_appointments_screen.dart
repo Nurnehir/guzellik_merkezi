@@ -171,6 +171,9 @@ class MyAppointmentsScreen extends StatelessWidget {
                                         salonName: data['salonName'],
                                         userName: data['userName'] ?? '',
                                         userSurname: data['userSurname'] ?? '',
+                                        salonKategori:
+                                            data['salonCategory'] ?? '',
+                                        sehir: data['sehir'] ?? '',
                                       ),
                                 ),
                               );
